@@ -19,7 +19,7 @@ jobs:
         method: [global, corepack, prefix, oldnpm]
         check-latest: [true, false]
         os: [ubuntu, macos, windows]
-        node-version: [12, null]
+        node-version: [12, 18, null]
     runs-on: ${{ matrix.os }}-latest
 
     name: ${{ matrix.method }}, cl=${{ matrix.check-latest }}, ${{ matrix.os }}, node=${{ matrix.node-version }}

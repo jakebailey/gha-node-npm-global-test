@@ -18,7 +18,7 @@ jobs:
         node-version: [12, 20]
     runs-on: ${{ matrix.os }}
 
-    name: method=${{ matrix.method }} os=${{ matrix.os }} node=${{ matrix.node-version }} check-latest=${{ matrix.check-latest }}
+    name: method=${{ matrix.method }} check-latest=${{ matrix.check-latest }} os=${{ matrix.os }} node=${{ matrix.node-version }}
 
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1

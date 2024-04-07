@@ -1,0 +1,6 @@
+{
+    "private": true,
+    "name": "gha-node-npm-global-test",
+    "version": "0.0.0",
+    "packageManager": "npm@8.19.4"
+}

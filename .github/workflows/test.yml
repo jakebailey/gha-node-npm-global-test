@@ -31,7 +31,7 @@ jobs:
 
       - run: |
           set -x
-          set | grep -E '^(PATH|NPM|NODE)_'
+          env | grep -iE '(PATH|NPM|NODE)'
           which npm
           npm --version
           which node

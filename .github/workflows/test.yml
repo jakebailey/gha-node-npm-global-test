@@ -27,16 +27,20 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
+      - run: echo "ORIGINAL_PATH=$PATH" >> $GITHUB_ENV
+
       - run: |
           set -x
+          set | grep -E '^(PATH|NPM|NODE)_'
           which npm
           npm --version
           which node
           node --version
-        name: Check versions
+        name: Check environment
 
       - run: corepack enable npm
         if: matrix.method == 'corepack'
+        name: corepack enable npm
 
       - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
@@ -45,31 +49,38 @@ jobs:
 
       - run: |
           set -x
+          set | grep -E '^(PATH|NPM|NODE)_'
           which npm
           npm --version
           which node
           node --version
-        name: Check versions
+        name: Check environment
 
       - run: |
           export NPM_CONFIG_PREFIX=$HOME/.npm-global
           echo "NPM_CONFIG_PREFIX=$HOME/.npm-global" >> "$GITHUB_ENV"
           echo "$NPM_CONFIG_PREFIX/bin" >> $GITHUB_PATH
         if: matrix.method == 'prefix'
+        name: Set npm prefix
 
       - run: npm install -g $(jq -r '.packageManager' < package.json)
         if: matrix.method == 'global' || matrix.method == 'prefix'
+        name: Globally install npm
 
-      - run: npx npm@10.2.4 install -g $(jq -r '.packageManager' < package.json)
+      - run: |
+          export PATH=$ORIGINAL_PATH
+          npx npm@10.2.4 install -g $(jq -r '.packageManager' < package.json)
         if: matrix.method == 'oldnpm'
+        name: Install npm with old npm
 
       - run: |
           set -x
+          set | grep -E '^(PATH|NPM|NODE)_'
           which npm
           npm --version
           which node
           node --version
-        name: Check versions
+        name: Check environment
 
       # Error if node version is not expected major
       - run: |

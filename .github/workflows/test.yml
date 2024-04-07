@@ -19,7 +19,7 @@ jobs:
         method: [global, corepack, prefix]
         check-latest: [true, false]
         os: [ubuntu-latest, macos-latest, windows-latest]
-        node-version: [12, null]
+        node-version: [12, 18, null]
     runs-on: ${{ matrix.os }}
 
     name: method=${{ matrix.method }} check-latest=${{ matrix.check-latest }} os=${{ matrix.os }} node=${{ matrix.node-version }}
@@ -76,6 +76,7 @@ jobs:
             exit 1
           fi
         name: Check if node version matches expected
+        if: matrix.node-version
 
       # Error if npm version is not expected version from package.json
       - run: |

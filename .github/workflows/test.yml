@@ -19,7 +19,7 @@ jobs:
         method: [global, corepack, prefix]
         check-latest: [true, false]
         os: [ubuntu-latest, macos-latest, windows-latest]
-        node-version: [12, 20]
+        node-version: [12, null]
     runs-on: ${{ matrix.os }}
 
     name: method=${{ matrix.method }} check-latest=${{ matrix.check-latest }} os=${{ matrix.os }} node=${{ matrix.node-version }}
@@ -64,3 +64,20 @@ jobs:
           npm --version
           which node
           node --version
+
+      # Error if node version is not expected major
+      - run: |
+          set -x
+          if [[ $(node --version) != v${{ matrix.node-version }}.* ]]; then
+            echo "Expected node version v${{ matrix.node-version }}.* but got $(node --version)"
+            exit 1
+          fi
+
+      # Error if npm version is not expected version from package.json
+      - run: |
+          EXPECTED=$(COREPACK_ENABLE_STRICT=0 corepack npm --version)
+          ACTUAL=$(npm --version)
+          if [[ $EXPECTED != $ACTUAL ]]; then
+            echo "Expected npm version $EXPECTED but got $ACTUAL"
+            exit 1
+          fi

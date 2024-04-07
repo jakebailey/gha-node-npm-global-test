@@ -33,6 +33,7 @@ jobs:
           npm --version
           which node
           node --version
+        name: Check versions
 
       - run: corepack enable npm
         if: matrix.method == 'corepack'
@@ -48,6 +49,7 @@ jobs:
           npm --version
           which node
           node --version
+        name: Check versions
 
       - run: npm install -g $(jq -r '.packageManager' < package.json)
         if: matrix.method == 'global'
@@ -64,6 +66,7 @@ jobs:
           npm --version
           which node
           node --version
+        name: Check versions
 
       # Error if node version is not expected major
       - run: |
@@ -72,12 +75,14 @@ jobs:
             echo "Expected node version v${{ matrix.node-version }}.* but got $(node --version)"
             exit 1
           fi
+        name: Check if node version matches expected
 
       # Error if npm version is not expected version from package.json
       - run: |
-          EXPECTED=$(COREPACK_ENABLE_STRICT=0 corepack npm --version)
+          EXPECTED=$(jq -r '.packageManagerVersionOnly' < package.json)
           ACTUAL=$(npm --version)
           if [[ $EXPECTED != $ACTUAL ]]; then
             echo "Expected npm version $EXPECTED but got $ACTUAL"
             exit 1
           fi
+        name: Check if npm version matches expected

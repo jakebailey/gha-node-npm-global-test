@@ -16,10 +16,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        method: [global, corepack, prefix, oldnpm]
-        check-latest: [true, false]
+        # method: [global, corepack, prefix, oldnpm]
+        # check-latest: [true, false]
+        # os: [ubuntu, macos, windows]
+        # node-version: [12, 18, null]
+        # old-npm-version: [10.2.4]
+
+        method: [oldnpm]
+        check-latest: [false]
         os: [ubuntu, macos, windows]
         node-version: [12, 18, null]
+        old-npm-version: [10.2.4, 10.2.5, 10.3.0, 10.4.0, 10.5.0]
     runs-on: ${{ matrix.os }}-latest
 
     name: ${{ matrix.method }}, cl=${{ matrix.check-latest }}, ${{ matrix.os }}, node=${{ matrix.node-version }}
@@ -69,9 +76,9 @@ jobs:
 
       - run: |
           export PATH=$ORIGINAL_PATH
-          npx npm@10.2.4 install -g $(jq -r '.packageManager' < package.json)
+          npx npm@${{ matrix.old-npm-version }} install -g $(jq -r '.packageManager' < package.json)
         if: matrix.method == 'oldnpm'
-        name: Install npm with old npm
+        name: Install npm with old npm ${{ matrix.old-npm-version }}
 
       - run: |
           set -x

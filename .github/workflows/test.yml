@@ -22,7 +22,7 @@ jobs:
         node-version: [12, 18, null]
     runs-on: ${{ matrix.os }}
 
-    name: method=${{ matrix.method }} check-latest=${{ matrix.check-latest }} os=${{ matrix.os }} node=${{ matrix.node-version }}
+    name: ${{ matrix.method }}, check-latest=${{ matrix.check-latest }}, ${{ matrix.os }}, node=${{ matrix.node-version }}
 
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -51,14 +51,14 @@ jobs:
           node --version
         name: Check versions
 
-      - run: npm install -g $(jq -r '.packageManager' < package.json)
-        if: matrix.method == 'global'
-
       - run: |
           export NPM_CONFIG_PREFIX=$HOME/.npm-global
           echo "NPM_CONFIG_PREFIX=$HOME/.npm-global" >> "$GITHUB_ENV"
           echo "$NPM_CONFIG_PREFIX/bin" >> $GITHUB_PATH
         if: matrix.method == 'prefix'
+
+      - run: npm install -g $(jq -r '.packageManager' < package.json)
+        if: matrix.method == 'global' || matrix.method == 'prefix'
 
       - run: |
           set -x
